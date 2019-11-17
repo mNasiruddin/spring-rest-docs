@@ -1,0 +1,140 @@
+buildscript {
+	ext {
+		springAutoRestDocsVersion = "2.0.8-SNAPSHOT"
+		springRestDocsVersion = "2.0.4.RELEASE"
+		springBootVersion = "2.1.8.RELEASE"
+	}
+	repositories {
+		jcenter()
+		mavenCentral()
+		maven {
+			url "https://oss.sonatype.org/content/repositories/snapshots"
+		}
+	}
+	dependencies {
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
+		classpath "org.asciidoctor:asciidoctor-gradle-plugin:1.5.9.2"
+	}
+}
+
+buildDir = 'build'
+
+apply plugin: 'idea'
+apply plugin: "java"
+apply plugin: "org.springframework.boot"
+apply plugin: "io.spring.dependency-management"
+apply plugin: "org.asciidoctor.convert"
+
+group = "com.example"
+version = "1.0.0-SNAPSHOT"
+
+description = """Spring REST Docs sample project"""
+
+tasks.withType(JavaCompile) {
+	options.encoding = "UTF-8"
+}
+
+configurations {
+	jsondoclet
+}
+
+ext {
+	// Usually, this would be "$buildDir/generated-snippets", but because this folder
+	// also contains a pom.xml Spring REST Docs' ManualRestDocumentation defaults
+	// to the Maven build folder
+	snippetsDir = file("target/generated-snippets")
+	javadocJsonDir = file("$buildDir/generated-javadoc-json")
+	jupiterengine = "5.2.0"
+	junitplatform = "1.2.0"
+	lombokversion = "1.18.6"
+}
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+	maven {
+		url "https://oss.sonatype.org/content/repositories/snapshots"
+	}
+}
+
+dependencies {
+	compile 'io.springfox:springfox-swagger-ui:2.7.0'
+	compile 'io.springfox:springfox-swagger2:2.7.0'
+
+	compileOnly "org.projectlombok:lombok:$lombokversion"
+	annotationProcessor "org.projectlombok:lombok:$lombokversion"
+
+	compile "org.springframework.boot:spring-boot-starter-web"
+	compile "org.springframework.boot:spring-boot-starter-security"
+	compile "org.springframework.security.oauth:spring-security-oauth2:2.3.5.RELEASE"
+	compile "org.springframework.data:spring-data-commons"
+	compile "org.springframework.boot:spring-boot-starter-hateoas"
+	compile "capital.scalable:spring-auto-restdocs-core:$springAutoRestDocsVersion"
+	//compile "capital.scalable:spring-auto-restdocs-shared-pojos-example:${project.version}"
+	testCompile("org.springframework.boot:spring-boot-starter-test") {
+		exclude(module: "commons-logging")
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+	testCompile "com.jayway.jsonpath:json-path-assert"
+	testCompile "org.springframework.restdocs:spring-restdocs-core:$springRestDocsVersion"
+	testCompile "org.springframework.restdocs:spring-restdocs-mockmvc:$springRestDocsVersion"
+	// Java 11 fix for https://stackoverflow.com/questions/43574426/how-to-resolve-java-lang-noclassdeffounderror-javax-xml-bind-jaxbexception-in-j
+	testCompile "javax.xml.bind:jaxb-api:2.2.11"
+	testCompile "com.sun.xml.bind:jaxb-core:2.2.11"
+	testCompile "com.sun.xml.bind:jaxb-impl:2.2.11"
+	testCompile "javax.activation:activation:1.1.1"
+	if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
+		jsondoclet "capital.scalable:spring-auto-restdocs-json-doclet:$springAutoRestDocsVersion"
+	} else {
+		jsondoclet "capital.scalable:spring-auto-restdocs-json-doclet-jdk9:$springAutoRestDocsVersion"
+	}
+
+	testImplementation "org.junit.platform:junit-platform-surefire-provider:$junitplatform"
+	testImplementation "org.junit.platform:junit-platform-engine:$junitplatform"
+	testImplementation "org.junit.platform:junit-platform-launcher:$junitplatform"
+	testImplementation "org.junit.jupiter:junit-jupiter-engine:$jupiterengine"
+	testImplementation "org.junit.vintage:junit-vintage-engine:$jupiterengine"
+}
+
+task jsonDoclet(type: Javadoc, dependsOn: compileJava) {
+	source = sourceSets.main.allJava
+	classpath = sourceSets.main.compileClasspath
+	destinationDir = javadocJsonDir
+	options.docletpath = configurations.jsondoclet.files.asType(List)
+	options.doclet = "capital.scalable.restdocs.jsondoclet.ExtractDocumentationAsJsonDoclet"
+	options.memberLevel = JavadocMemberLevel.PACKAGE
+}
+
+test {
+	useJUnitPlatform()
+	systemProperty "org.springframework.restdocs.outputDir", snippetsDir
+	systemProperty "org.springframework.restdocs.javadocJsonDir", javadocJsonDir
+
+	dependsOn jsonDoclet
+}
+
+asciidoctor {
+	sourceDir = file("src/docs/asciidoc")
+	outputDir = file("$buildDir/generated-docs")
+	options backend: "html", doctype: "book"
+
+	attributes "source-highlighter": "highlightjs", "snippets": snippetsDir
+
+	dependsOn test
+}
+
+asciidoctor.doLast {
+	copy {
+		from file("$buildDir/generated-docs/html5")
+		into file("apidocs")
+		include "index.html"
+	}
+}
+
+jar {
+	dependsOn asciidoctor
+}
+
+clean.doFirst {
+	delete "${rootDir}/target"
+}

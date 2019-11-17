@@ -1,0 +1,152 @@
+{
+	"info": {
+		"_postman_id": "0ebc0f1a-8933-494f-bb4d-d42b596d926a",
+		"name": "student api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "create student",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fdb6ef44-fd6e-4684-8654-cd24cac99937",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"studentid\", jsonData.studentid);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstname\": \"mohammed\",\n    \"surname\": \"nasiruddin\",\n    \"email\": \"mohammed.nasiruddin@hmhco.com\",\n    \"school\": \"trinity\",\n    \"district\": \"dublin\",\n    \"subjects\": [\n        {\n            \"id\" : 123,\n            \"name\": \"maths\"\n        },\n        {\n            \"id\" : 124,\n            \"name\": \"science\"\n        }\n    ],\n    \"address\": {\n        \"street\": \"weavers square\",\n        \"city\" : \"dublin\",\n        \"state\" : \"dublin\",\n        \"country\" : {\n            \"code\" : \"IE\",\n            \"name\" : \"Ireland\"\n        }\n    },\n    \"phonenumber\" : {\n        \"internationalcode\" : \"+353\",\n        \"localnumber\" : \"123456789\"\n    }\n  }"
+				},
+				"url": {
+					"raw": "http://{{host}}:{{port}}/api/v1/student",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"v1",
+						"student"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update student",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1147e964-68c4-4fb4-a252-ea83812e58c6",
+						"exec": [
+							"postman.setGlobalVariable(\"auth_token\",postman.getResponseHeader(\"Authorization\"))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstname\": \"mohammed\",\n    \"surname\": \"nasiruddin\",\n    \"email\": \"mohammed.nasiruddin@hmhco.com\",\n    \"school\": \"trinity\",\n    \"district\": \"dublin\",\n    \"subjects\": [\n        {\n            \"id\" : 123,\n            \"name\": \"maths\"\n        },\n        {\n            \"id\" : 124,\n            \"name\": \"science\"\n        }\n    ],\n    \"address\": {\n        \"street\": \"weavers square\",\n        \"city\" : \"dublin\",\n        \"state\" : \"dublin\",\n        \"country\" : {\n            \"code\" : \"IE\",\n            \"name\" : \"Ireland\"\n        }\n    },\n    \"phonenumber\" : {\n        \"internationalcode\" : \"+353\",\n        \"localnumber\" : \"123456789\"\n    }\n  }"
+				},
+				"url": {
+					"raw": "http://{{host}}:{{port}}/api/v1/student/{{studentid}}",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"v1",
+						"student",
+						"{{studentid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "find student",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{host}}:{{port}}/api/v1/student/{{studentid}}",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"v1",
+						"student",
+						"{{studentid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete student",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{host}}:{{port}}/api/v1/student/{{studentid}}",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"v1",
+						"student",
+						"{{studentid}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

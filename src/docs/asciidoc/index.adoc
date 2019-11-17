@@ -1,0 +1,14 @@
+= Student API
+Mohammed Nasiruddin/Andrew Egan
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toc-title: Index
+:toclevels: 4
+:sectlinks:
+
+= Documentation
+include::{snippets}/student-integration-test/create-student/auto-section.adoc[]
+include::{snippets}/student-integration-test/read-student/auto-section.adoc[]
+include::{snippets}/student-integration-test/update-student/auto-section.adoc[]
