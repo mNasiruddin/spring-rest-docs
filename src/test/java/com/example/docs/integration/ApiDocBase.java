@@ -31,7 +31,7 @@ public class ApiDocBase {
     @Autowired
     protected ObjectMapper objectMapper;
 
-    protected MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentation) {
@@ -59,7 +59,7 @@ public class ApiDocBase {
                 .build();
     }
 
-    public MockMvc getMockMvc() {
+    protected MockMvc getMockMvc() {
         return mockMvc;
     }
 }
