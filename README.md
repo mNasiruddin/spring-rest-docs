@@ -33,8 +33,7 @@ Demonstrates Spring Rest Docs versus Swagger
   - via [maven](#via-maven) or [gradle](#via-gradle)
 
 ## Output
-[Here is API docs](apidocs/index.html)
-
+[Here is API docs](static/api/docs/index.html)
 
 # Producing api docs
 
@@ -50,4 +49,6 @@ make sure java 8 is set jdk in IDE
 - gradle clean
 - gradle build
 
-## hurray api docs are here [apidocs/index.html](apidocs/index.html)
+## hurray api docs are [here](static/api/docs/index.html)
+
+After application is started, API docs can be accessed at [endpoint](http://localhost:8085/api/docs/index.html)
