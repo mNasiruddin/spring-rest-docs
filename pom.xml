@@ -8,7 +8,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>doc</name>
+    <name>spring-rest-docs</name>
     <description>Student Api Documentation</description>
 
     <parent>
@@ -160,7 +160,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/apidocs</outputDirectory>
+                            <outputDirectory>${basedir}/static/api/docs</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${project.build.directory}/generated-docs</directory>
