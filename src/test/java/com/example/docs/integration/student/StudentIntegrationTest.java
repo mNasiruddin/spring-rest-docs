@@ -12,12 +12,12 @@ import static com.example.docs.integration.TestUtil.toJavaObject;
 import static com.example.docs.integration.student.StudentTestInputData.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class StudentIntegrationTest extends ApiDocBase {
+class StudentIntegrationTest extends ApiDocBase {
 
-    private String studentId = "";
+    private static String studentId = "";
 
     @Test
-    public void createStudent() throws Exception {
+    void createStudent() throws Exception {
 
         MvcResult mvcResult = getMockMvc().perform(MockMvcRequestBuilders.post(getURI())
                 .content(asJsonString(newStudentRequest()))
@@ -25,23 +25,26 @@ public class StudentIntegrationTest extends ApiDocBase {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andReturn();
-        studentId = toJavaObject(mvcResult.getResponse().getContentAsString(), StudentResponse.class).getStudentId();
+       setStudentId(toJavaObject(mvcResult.getResponse().getContentAsString(), StudentResponse.class).getStudentId());
     }
 
     @Test
-    public void readStudent() throws Exception {
+    void readStudent() throws Exception {
         getMockMvc().perform(MockMvcRequestBuilders.get(getURI() + studentId)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void updateStudent() throws Exception {
+    void updateStudent() throws Exception {
         getMockMvc().perform(MockMvcRequestBuilders.put(getURI() + studentId)
                 .content(asJsonString(updateStudentRequest()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                    .andExpect(status().isOk());
     }
 
+    private static void setStudentId(String studentId) {
+        StudentIntegrationTest.studentId = studentId;
+    }
 }
